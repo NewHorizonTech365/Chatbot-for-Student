@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo IA - Gemini Centré</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. LE DESIGN (CSS Modern) --- */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #a871ed 0%, #764f59 100%); /* Plus doux */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+            --blur: blur(20px);
+            --gemini-gradient: linear-gradient(135deg, #4285F4 0%, #34A853 33%, #FBBC05 66%, #EA4335 100%); /* Couleurs Gemini */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #fdfbfb;
+            background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); /* Fond clair et doux */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column; /* Permet d'aligner le loader */
+        }
+
+        /* Le conteneur principal */
+        .main-interface {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        p.subtitle {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* La barre de prompt centrale (effet Glassmorphism) */
+        .prompt-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            border: var(--glass-border);
+            max-width: 600px;
+            margin: 0 auto 30px auto; /* Marge en bas pour la réponse */
+            transition: transform 0.3s;
+        }
+
+        .prompt-container:hover {
+            transform: scale(1.02);
+        }
+
+        .prompt-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 15px;
+            font-size: 1.1rem;
+            outline: none;
+            color: #333;
+        }
+
+        .prompt-actions button {
+            background: var(--gemini-gradient); /* Bouton aux couleurs de Gemini */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-left: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .prompt-actions button:hover { opacity: 0.9; }
+
+        /* Zone de réponse */
+        /* Zone de réponse */
+/* Zone de réponse (CORRIGÉE pour le défilement) */
+.response-area {
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+    border: var(--glass-border);
+    max-width: 600px;
+    margin: 20px auto;
+    min-height: 100px;
+    
+    /* === LIGNES CLÉS AJOUTÉES/MODIFIÉES === */
+    max-height: 400px; /* Limite la hauteur maximale de la boîte de réponse */
+    overflow-y: auto; /* Force l'apparition de la barre de défilement verticale si nécessaire */
+    overflow-x: hidden; /* Empêche le défilement horizontal */
+    /* ======================================= */
+    
+    padding: 25px;
+    text-align: left;
+    color: #333;
+    line-height: 1.6;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+        .response-area.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loader (spinner) */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8ec5fc;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none; /* Caché par défaut */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-interface">
+        <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
+        <h1>Bienvenue aux Futurs Codeurs !</h1>
+        <p class="subtitle">Découvrez la puissance de l'IA en posant n'importe quelle question technique à Gemini.</p>
+
+        <div class="prompt-container">
+            <span style="padding-left:10px; opacity:0.5">🧠</span>
+            <input type="text" id="promptInput" class="prompt-input" placeholder="Parlez-moi de JavaScript..." onkeypress="handleEnter(event)">
+            <div class="prompt-actions">
+                <button onclick="sendPrompt()">Demander à Gemini</button>
+            </div>
+        </div>
+
+        <div id="responseArea" class="response-area">
+            <div id="loader" class="loader"></div>
+            <p id="responseText" style="display: none;"></p>
+        </div>
+    </div>
+
+    <script>
+        /* --- 2. LA LOGIQUE (JAVASCRIPT) --- */
+
+        // VEUILLEZ REMPLACER PAR VOTRE CLÉ API GEMINI
+        // Elle doit commencer par "AIza..."
+        const GEMINI_API_KEY = "AIzaSyDCqCdnYokMv7_PNEK3PgqAr46qbtdLmJE"; 
+
+        const PROMPT_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const promptInput = document.getElementById('promptInput');
+        const responseArea = document.getElementById('responseArea');
+        const responseText = document.getElementById('responseText');
+        const loader = document.getElementById('loader');
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendPrompt();
+        }
+
+        async function sendPrompt() {
+            const userPrompt = promptInput.value.trim();
+            if (!userPrompt) return;
+
+            // 1. Afficher l'aire de réponse et le loader
+            responseArea.classList.add('active');
+            responseText.style.display = 'none';
+            loader.style.display = 'block';
+            responseText.innerText = ''; // Effacer la réponse précédente
+
+            try {
+                // 2. Appel à l'API Gemini
+                const response = await fetch(PROMPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                {text: `Tu es un assistant IA pour des étudiants en informatique, très encourageant et pédagogique. Réponds de manière concise, précise et utilise des exemples si pertinent. Réponds à la question suivante : ${userPrompt}`}
+                            ]
+                        }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Erreur API Gemini: ${response.status} - ${JSON.stringify(errorData)}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                
+                // 3. Afficher la réponse avec l'effet "machine à écrire"
+                loader.style.display = 'none';
+                responseText.style.display = 'block';
+                typeWriterEffect(aiResponse);
+
+            } catch (error) {
+                console.error("Erreur Gemini API:", error);
+                loader.style.display = 'none';
+                responseText.style.display = 'block';
+                typeWriterEffect("Désolé, une erreur est survenue lors de la connexion à Gemini. Vérifiez votre clé ou la console.");
+            }
+        }
+
+        // Effet Machine à écrire pour la réponse
+        function typeWriterEffect(text) {
+            let i = 0;
+            const speed = 20; // Vitesse de frappe en ms
+
+            function type() {
+                if (i < text.length) {
+                    responseText.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+    </script>
+</body>
+</html>
