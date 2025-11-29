@@ -3,181 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo IA - Gemini Centré</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Chatbot Rafiki Écolier IA - Démo Moderne</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. LE DESIGN (CSS Modern) --- */
+        /* --- 1. COULEURS ET VARIABLES GLOBALES --- */
         :root {
-            --primary-gradient: linear-gradient(135deg, #a871ed 0%, #764f59 100%); /* Plus doux */
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-            --blur: blur(20px);
-            --gemini-gradient: linear-gradient(135deg, #4285F4 0%, #34A853 33%, #FBBC05 66%, #EA4335 100%); /* Couleurs Gemini */
+            --rafiki-bg-start: #e0c3fc; /* Début du dégradé de fond */
+            --rafiki-bg-end: #8ec5fc;   /* Fin du dégradé de fond */
+            --card-bg: #ffffff;         /* Fond des cartes/chatbot */
+            --primary-blue: #4A90EE;    /* Bleu principal pour les boutons/accents */
+            --accent-orange: #FF8C42;   /* Orange vibrant pour les accents */
+            --gradient-main: linear-gradient(135deg, var(--primary-blue), #8A2BE2); /* Dégradé pour les titres/boutons */
+            --gradient-accent: linear-gradient(135deg, var(--accent-orange), #FF6F61); /* Dégradé pour les accents secondaires */
+            --text-dark: #2c3e50;       /* Texte foncé */
+            --text-light: #5f748c;      /* Texte plus léger */
+            --border-color: #e0e6ed;    /* Couleur des bordures subtiles */
+            --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08); /* Ombre douce et élégante */
+            --border-radius: 15px;      /* Rayon des bordures général */
+            --animation-speed: 0.3s;
         }
 
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: #fdfbfb;
-            background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); /* Fond clair et doux */
-            height: 100vh;
+            background: linear-gradient(120deg, var(--rafiki-bg-start), var(--rafiki-bg-end)); /* Beau dégradé de fond */
+            color: var(--text-dark);
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            flex-direction: column; /* Permet d'aligner le loader */
+            min-height: 100vh;
+            overflow: hidden; /* Prévient les barres de défilement du body */
+            line-height: 1.6;
         }
 
-        /* Le conteneur principal */
-        .main-interface {
+        /* --- 2. CONTENEUR PRINCIPAL DU CHATBOT --- */
+        .chatbot-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            padding: clamp(20px, 5vw, 40px); /* Padding responsif */
             text-align: center;
-            width: 100%;
-            max-width: 800px;
-            z-index: 1;
-            padding: 20px;
+            max-width: 700px;
+            width: 90%; /* Occupe 90% de la largeur disponible */
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInSlideUp var(--animation-speed) forwards ease-out;
+            position: relative; /* Pour le positionnement des éléments internes */
+            display: flex; /* Flexbox pour organiser le contenu */
+            flex-direction: column;
+            gap: clamp(15px, 3vw, 25px); /* Espacement responsif entre les éléments */
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 3. EN-TÊTE DU CHATBOT --- */
+        .header-icon {
+            font-size: clamp(3rem, 7vw, 4rem); /* Taille de l'icône responsiv */
+            margin-bottom: 10px;
         }
 
         h1 {
-            font-size: 3rem;
-            color: white;
-            margin-bottom: 10px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: clamp(1.8rem, 5vw, 2.5rem); /* Taille de titre responsiv */
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800; /* Plus épais pour l'impact */
+            margin-bottom: 8px;
         }
 
         p.subtitle {
-            color: white;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* Taille de sous-titre responsiv */
+            color: var(--text-light);
+            margin-bottom: clamp(20px, 5vw, 30px);
         }
 
-        /* La barre de prompt centrale (effet Glassmorphism) */
-        .prompt-container {
-            background: var(--glass-bg);
-            backdrop-filter: var(--blur);
-            padding: 10px;
-            border-radius: 20px;
+        /* --- 4. BARRE DE PROMPT ET BOUTON --- */
+        .prompt-wrapper {
             display: flex;
+            flex-wrap: wrap; /* Permet aux éléments de passer à la ligne sur petits écrans */
+            gap: 10px;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-            border: var(--glass-border);
-            max-width: 600px;
-            margin: 0 auto 30px auto; /* Marge en bas pour la réponse */
-            transition: transform 0.3s;
-        }
-
-        .prompt-container:hover {
-            transform: scale(1.02);
         }
 
         .prompt-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 15px;
-            font-size: 1.1rem;
+            flex-grow: 1;
+            padding: 15px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             outline: none;
-            color: #333;
+            transition: all var(--animation-speed) ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+            min-width: 150px; /* Assure une taille minimale */
+        }
+        .prompt-input::placeholder { color: var(--text-light); }
+        .prompt-input:focus { 
+            border-color: var(--primary-blue); 
+            box-shadow: 0 0 0 4px rgba(74, 144, 238, 0.15); 
         }
 
-        .prompt-actions button {
-            background: var(--gemini-gradient); /* Bouton aux couleurs de Gemini */
+        .send-button {
+            background: var(--gradient-accent); /* Bouton avec dégradé orange */
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            margin-left: 5px;
+            border-radius: var(--border-radius);
+            padding: 15px 30px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.2s;
+            transition: all var(--animation-speed) ease;
+            flex-shrink: 0; /* Empêche le bouton de rétrécir */
+        }
+        .send-button:hover {
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+            transform: translateY(-2px);
+        }
+        .send-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .send-button:disabled {
+            background: linear-gradient(135deg, #a0c2e9, #d3b4ed); /* Dégradé désactivé */
+            cursor: not-allowed;
+            opacity: 0.8;
+            transform: translateY(0);
+            box-shadow: none;
         }
 
-        .prompt-actions button:hover { opacity: 0.9; }
-
-        /* Zone de réponse */
-        /* Zone de réponse */
-/* Zone de réponse (CORRIGÉE pour le défilement) */
-.response-area {
-    background: var(--glass-bg);
-    backdrop-filter: var(--blur);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-    border: var(--glass-border);
-    max-width: 600px;
-    margin: 20px auto;
-    min-height: 100px;
-    
-    /* === LIGNES CLÉS AJOUTÉES/MODIFIÉES === */
-    max-height: 400px; /* Limite la hauteur maximale de la boîte de réponse */
-    overflow-y: auto; /* Force l'apparition de la barre de défilement verticale si nécessaire */
-    overflow-x: hidden; /* Empêche le défilement horizontal */
-    /* ======================================= */
-    
-    padding: 25px;
-    text-align: left;
-    color: #333;
-    line-height: 1.6;
-    font-size: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
+        /* --- 5. ZONE DE RÉPONSE --- */
+        .response-area {
+            min-height: 120px;
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: var(--rafiki-light-bg);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 4vw, 25px);
+            text-align: left;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Aligner le contenu en haut */
+            align-items: flex-start;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity var(--animation-speed), transform var(--animation-speed);
+        }
         .response-area.active {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Loader (spinner) */
+        .response-area p {
+            margin: 0;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: var(--text-dark);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        /* --- 6. LOADER & TYPING EFFECT --- */
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #8ec5fc;
+            border: 4px solid rgba(74, 144, 238, 0.2);
+            border-top: 4px solid var(--primary-blue);
             border-radius: 50%;
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
-            display: none; /* Caché par défaut */
+            display: none;
+            align-self: center;
+            margin: 20px auto; /* Centré verticalement et horizontalement */
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            border-right: .15em solid var(--primary-blue);
+            white-space: pre-wrap; /* Permet le retour à la ligne pour le texte long */
+            margin: 0;
+            animation: blink-caret .75s step-end infinite;
+            /* L'animation typing 0s est retirée car le JS gère déjà l'apparition progressive */
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary-blue); }
+        }
+
+        /* --- 7. MEDIA QUERIES pour la Responsivité --- */
+        @media (max-width: 600px) {
+            .chatbot-container {
+                width: 95%;
+                padding: 20px;
+            }
+            .prompt-wrapper {
+                flex-direction: column; /* La barre de prompt et le bouton s'empilent */
+                align-items: stretch; /* Les éléments s'étirent sur toute la largeur */
+            }
+            .send-button {
+                width: 100%; /* Le bouton prend toute la largeur */
+                padding: 12px 20px;
+            }
+            .prompt-input {
+                padding: 12px 15px;
+            }
+            .response-area {
+                max-height: 300px; /* Réduit un peu la hauteur max sur petits écrans */
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-interface">
-        <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
-        <h1>Bienvenue aux Futurs Codeurs !</h1>
-        <p class="subtitle">Découvrez la puissance de l'IA en posant n'importe quelle question technique à Gemini.</p>
+    <div class="chatbot-container">
+        <div class="header-icon">🚀</div>
+        <h1>Bienvenue, Futur Codeur !</h1>
+        <p class="subtitle">Je suis l'assistant IA de Rafiki Écolier. Pose-moi une question sur le code, l'informatique ou tout ce qui t'intrigue !</p>
 
-        <div class="prompt-container">
-            <span style="padding-left:10px; opacity:0.5">🧠</span>
-            <input type="text" id="promptInput" class="prompt-input" placeholder="Parlez-moi de JavaScript..." onkeypress="handleEnter(event)">
-            <div class="prompt-actions">
-                <button onclick="sendPrompt()">Demander à Gemini</button>
-            </div>
+        <div class="prompt-wrapper">
+            <input type="text" id="promptInput" class="prompt-input" placeholder="Ex: C'est quoi la différence entre Java et JavaScript ?" onkeypress="handleEnter(event)">
+            <button id="sendButton" class="send-button" onclick="sendPrompt()">Demander à l'IA</button>
         </div>
 
         <div id="responseArea" class="response-area">
             <div id="loader" class="loader"></div>
-            <p id="responseText" style="display: none;"></p>
+            <p id="responseText" class="typing-text" style="display: none;"></p>
         </div>
     </div>
 
     <script>
-        /* --- 2. LA LOGIQUE (JAVASCRIPT) --- */
-
-        // VEUILLEZ REMPLACER PAR VOTRE CLÉ API GEMINI
-        // Elle doit commencer par "AIza..."
+        // --- 8. LOGIQUE JAVASCRIPT (Connexion Gemini) ---
+        // VEUILLEZ REMPLACER PAR VOTRE NOUVELLE CLÉ API GEMINI
         const GEMINI_API_KEY = "AIzaSyDCqCdnYokMv7_PNEK3PgqAr46qbtdLmJE"; 
-
         const PROMPT_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
         const promptInput = document.getElementById('promptInput');
+        const sendButton = document.getElementById('sendButton');
         const responseArea = document.getElementById('responseArea');
         const responseText = document.getElementById('responseText');
         const loader = document.getElementById('loader');
@@ -190,14 +262,17 @@
             const userPrompt = promptInput.value.trim();
             if (!userPrompt) return;
 
-            // 1. Afficher l'aire de réponse et le loader
+            // Désactiver l'input et le bouton pendant la requête
+            promptInput.disabled = true;
+            sendButton.disabled = true;
+
+            // Afficher l'aire de réponse et le loader
             responseArea.classList.add('active');
             responseText.style.display = 'none';
             loader.style.display = 'block';
             responseText.innerText = ''; // Effacer la réponse précédente
 
             try {
-                // 2. Appel à l'API Gemini
                 const response = await fetch(PROMPT_URL, {
                     method: 'POST',
                     headers: {
@@ -206,7 +281,7 @@
                     body: JSON.stringify({
                         contents: [{
                             parts: [
-                                {text: `Tu es un assistant IA pour des étudiants en informatique, très encourageant et pédagogique. Réponds de manière concise, précise et utilise des exemples si pertinent. Réponds à la question suivante : ${userPrompt}`}
+                                {text: `Tu es un tuteur IA très enthousiaste et pédagogue pour des jeunes étudiants en informatique de Rafiki Écolier. Ton but est de les passionner pour la technologie et le code. Réponds de manière concise, précise, encourageante, et utilise des exemples concrets ou des emojis pertinents. Si la question n'est pas claire, demande plus de précisions avec gentillesse. Réponds à la question suivante : ${userPrompt}`}
                             ]
                         }]
                     })
@@ -220,7 +295,7 @@
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
                 
-                // 3. Afficher la réponse avec l'effet "machine à écrire"
+                // Afficher la réponse avec l'effet "machine à écrire"
                 loader.style.display = 'none';
                 responseText.style.display = 'block';
                 typeWriterEffect(aiResponse);
@@ -229,20 +304,35 @@
                 console.error("Erreur Gemini API:", error);
                 loader.style.display = 'none';
                 responseText.style.display = 'block';
-                typeWriterEffect("Désolé, une erreur est survenue lors de la connexion à Gemini. Vérifiez votre clé ou la console.");
+                responseText.innerText = "Désolé, une erreur est survenue lors de la connexion à Gemini. Vérifiez votre clé, votre console, ou votre quota d'utilisation.";
+            } finally {
+                // Réactiver l'input et le bouton après la requête
+                promptInput.disabled = false;
+                sendButton.disabled = false;
+                promptInput.focus(); // Remettre le focus
             }
         }
 
         // Effet Machine à écrire pour la réponse
         function typeWriterEffect(text) {
             let i = 0;
-            const speed = 20; // Vitesse de frappe en ms
+            const speed = 25; // Vitesse de frappe en ms
+
+            // Annuler toute animation de clignotement précédente sur le curseur
+            responseText.style.animation = 'none';
+            responseText.style.borderColor = 'transparent'; // Cache le curseur au début
 
             function type() {
                 if (i < text.length) {
                     responseText.innerHTML += text.charAt(i);
                     i++;
+                    // Si le texte déborde, scroll automatique
+                    responseArea.scrollTop = responseArea.scrollHeight;
                     setTimeout(type, speed);
+                } else {
+                    // Une fois le texte entièrement écrit, faire clignoter le curseur
+                    responseText.style.animation = 'blink-caret .75s step-end infinite';
+                    responseText.style.borderColor = 'var(--primary-blue)';
                 }
             }
             type();
