@@ -3,32 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Rafiki Écolier IA - Démo Moderne</title>
+    <title>Chatbot Rafiki-Écolier</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* --- 1. COULEURS ET VARIABLES GLOBALES --- */
         :root {
-            --rafiki-bg-start: #e0c3fc; /* Début du dégradé de fond */
-            --rafiki-bg-end: #8ec5fc;   /* Fin du dégradé de fond */
-            --card-bg: #ffffff;         /* Fond des cartes/chatbot */
-            --primary-blue: #4A90EE;    /* Bleu principal pour les boutons/accents */
-            --accent-orange: #FF8C42;   /* Orange vibrant pour les accents */
-            --gradient-main: linear-gradient(135deg, var(--primary-blue), #8A2BE2); /* Dégradé pour les titres/boutons */
-            --gradient-accent: linear-gradient(135deg, var(--accent-orange), #FF6F61); /* Dégradé pour les accents secondaires */
-            --text-dark: #2c3e50;       /* Texte foncé */
-            --text-light: #5f748c;      /* Texte plus léger */
-            --border-color: #e0e6ed;    /* Couleur des bordures subtiles */
-            --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08); /* Ombre douce et élégante */
-            --border-radius: 15px;      /* Rayon des bordures général */
-            --animation-speed: 0.3s;
+            --background-gradient: linear-gradient(109.6deg, rgba(179,9,23,1) 11.2%, rgba(226,181,49,1) 91.1%);
+            --glass-panel-bg: rgba(255, 255, 255, 0.15); /* Transparence pour le panneau central */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-blur: blur(20px);
+            --text-light: #f0f0f0;
+            --text-dark-glass: #333; /* Pour le texte sur fond clair dans le glass */
+            --input-bg: rgba(255, 255, 255, 0.2);
+            --input-border: 1px solid rgba(255, 255, 255, 0.3);
+            --input-placeholder: rgba(255, 255, 255, 0.7);
+            --button-send-bg: rgba(255, 255, 255, 0.8);
+            --button-send-icon: #e2b531; /* Couleur de l'icône d'envoi */
+            --chat-bubble-bg-bot: rgba(255, 255, 255, 0.9);
+            --chat-bubble-bg-user: rgba(255, 255, 255, 0.3);
+            --chat-bubble-text-bot: #333;
+            --chat-bubble-text-user: #fff;
+            --suggestion-bg: rgba(255, 255, 255, 0.2);
+            --suggestion-border: 1px solid rgba(255, 255, 255, 0.3);
+            --suggestion-hover: rgba(255, 255, 255, 0.4);
+            --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.2);
+            --border-radius-large: 20px;
+            --border-radius-small: 12px;
+            --animation-duration: 0.3s;
         }
 
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(120deg, var(--rafiki-bg-start), var(--rafiki-bg-end)); /* Beau dégradé de fond */
-            color: var(--text-dark);
+            background: var(--background-gradient);
+            color: var(--text-light);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -37,22 +46,24 @@
             line-height: 1.6;
         }
 
-        /* --- 2. CONTENEUR PRINCIPAL DU CHATBOT --- */
-        .chatbot-container {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-light);
-            padding: clamp(20px, 5vw, 40px); /* Padding responsif */
-            text-align: center;
-            max-width: 700px;
-            width: 90%; /* Occupe 90% de la largeur disponible */
+        /* --- 2. CONTENEUR GLOBAL DU CHATBOT (Panneau central Alena AI) --- */
+        .chatbot-wrapper {
+            background: var(--glass-panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-soft);
+            max-width: 900px; /* Plus large pour accueillir le contenu */
+            width: 90%;
+            height: 90vh; /* Hauteur fixe pour le défilement */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Cache le contenu qui dépasse */
+            position: relative;
             transform: translateY(20px);
             opacity: 0;
-            animation: fadeInSlideUp var(--animation-speed) forwards ease-out;
-            position: relative; /* Pour le positionnement des éléments internes */
-            display: flex; /* Flexbox pour organiser le contenu */
-            flex-direction: column;
-            gap: clamp(15px, 3vw, 25px); /* Espacement responsif entre les éléments */
+            animation: fadeInSlideUp var(--animation-duration) forwards ease-out;
         }
 
         @keyframes fadeInSlideUp {
@@ -61,217 +72,381 @@
         }
 
         /* --- 3. EN-TÊTE DU CHATBOT --- */
-        .header-icon {
-            font-size: clamp(3rem, 7vw, 4rem); /* Taille de l'icône responsiv */
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.5rem); /* Taille de titre responsiv */
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800; /* Plus épais pour l'impact */
-            margin-bottom: 8px;
-        }
-
-        p.subtitle {
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* Taille de sous-titre responsiv */
-            color: var(--text-light);
-            margin-bottom: clamp(20px, 5vw, 30px);
-        }
-
-        /* --- 4. BARRE DE PROMPT ET BOUTON --- */
-        .prompt-wrapper {
+        .chat-header {
+            padding: 20px 30px;
             display: flex;
-            flex-wrap: wrap; /* Permet aux éléments de passer à la ligne sur petits écrans */
-            gap: 10px;
+            justify-content: space-between;
             align-items: center;
+            border-bottom: var(--glass-border);
+            flex-shrink: 0; /* Empêche de rétrécir */
         }
-
-        .prompt-input {
-            flex-grow: 1;
-            padding: 15px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            outline: none;
-            transition: all var(--animation-speed) ease;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
-            min-width: 150px; /* Assure une taille minimale */
-        }
-        .prompt-input::placeholder { color: var(--text-light); }
-        .prompt-input:focus { 
-            border-color: var(--primary-blue); 
-            box-shadow: 0 0 0 4px rgba(74, 144, 238, 0.15); 
-        }
-
-        .send-button {
-            background: var(--gradient-accent); /* Bouton avec dégradé orange */
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 15px 30px;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        .chat-header .logo {
+            font-size: 1.5rem;
             font-weight: 700;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+        }
+        .chat-header .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.8rem;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
-            flex-shrink: 0; /* Empêche le bouton de rétrécir */
+            opacity: 0.7;
+            transition: opacity var(--animation-duration);
         }
-        .send-button:hover {
-            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
-            transform: translateY(-2px);
-        }
-        .send-button:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
-        .send-button:disabled {
-            background: linear-gradient(135deg, #a0c2e9, #d3b4ed); /* Dégradé désactivé */
-            cursor: not-allowed;
-            opacity: 0.8;
-            transform: translateY(0);
-            box-shadow: none;
-        }
+        .chat-header .close-btn:hover { opacity: 1; }
 
-        /* --- 5. ZONE DE RÉPONSE --- */
-        .response-area {
-            min-height: 120px;
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            background-color: var(--rafiki-light-bg);
-            border-radius: var(--border-radius);
-            padding: clamp(20px, 4vw, 25px);
-            text-align: left;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+        /* --- 4. ZONE DE BIENVENUE / ICÔNE CENTRALE --- */
+        .welcome-center {
+            flex-grow: 1; /* Prend l'espace restant */
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Aligner le contenu en haut */
-            align-items: flex-start;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity var(--animation-speed), transform var(--animation-speed);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            gap: 15px;
+            opacity: 1; /* Visible par défaut */
+            transition: opacity var(--animation-duration);
         }
-        .response-area.active {
-            opacity: 1;
-            transform: translateY(0);
+        .welcome-center.hidden { opacity: 0; height: 0; overflow: hidden; padding: 0;} /* Caché quand le chat démarre */
+
+        .center-icon {
+            font-size: 6rem; /* Grande icône centrale */
+            animation: pulse 2s infinite ease-in-out;
+            margin-bottom: 20px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
-        .response-area p {
+        .welcome-text {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .initial-prompt-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .initial-prompt-suggestions button {
+            background: rgba(255, 255, 255, 0.2);
+            border: var(--glass-border);
+            border-radius: var(--border-radius-small);
+            color: var(--text-light);
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color var(--animation-duration);
+        }
+        .initial-prompt-suggestions button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+
+        /* --- 5. ZONE DE DISCUSSION (MESSAGES) --- */
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth; /* Défilement doux */
+        }
+        .chat-messages.hidden { display: none; } /* Caché initialement */
+
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: var(--border-radius-small);
+            line-height: 1.5;
+            font-size: 0.95rem;
+            word-wrap: break-word; /* Casse les mots longs */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: fadeIn var(--animation-duration) ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-bubble.bot {
+            background-color: var(--chat-bubble-bg-bot);
+            color: var(--chat-bubble-text-bot);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.user {
+            background-color: var(--chat-bubble-bg-user);
+            color: var(--chat-bubble-text-user);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            backdrop-filter: var(--glass-blur); /* Un peu de glassmorphism sur les bulles user */
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+
+        /* Loader dans les bulles */
+        .chat-bubble .loader {
+            border: 3px solid rgba(226,181,49, 0.2); /* Plus discret */
+            border-top: 3px solid var(--button-send-icon);
+            width: 20px;
+            height: 20px;
             margin: 0;
-            line-height: 1.7;
-            white-space: pre-wrap;
-            color: var(--text-dark);
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            display: inline-block; /* Aligné avec le texte */
+            vertical-align: middle;
+            margin-right: 8px;
         }
 
-        /* --- 6. LOADER & TYPING EFFECT --- */
-        .loader {
-            border: 4px solid rgba(74, 144, 238, 0.2);
-            border-top: 4px solid var(--primary-blue);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            display: none;
-            align-self: center;
-            margin: 20px auto; /* Centré verticalement et horizontalement */
+        /* --- 6. BARRE DE SAISIE DU PROMPT EN BAS --- */
+        .chat-input-area {
+            flex-shrink: 0; /* Empêche de rétrécir */
+            padding: 20px 30px;
+            border-top: var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--glass-panel-bg); /* Maintient le glassmorphism en bas */
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .prompt-input-bottom {
+            flex-grow: 1;
+            background: var(--input-bg);
+            border: var(--input-border);
+            border-radius: var(--border-radius-small);
+            padding: 12px 18px;
+            font-size: 1rem;
+            color: var(--text-light);
+            outline: none;
+            transition: all var(--animation-duration);
+        }
+        .prompt-input-bottom::placeholder {
+            color: var(--input-placeholder);
+        }
+        .prompt-input-bottom:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
 
-        .typing-text {
-            display: inline-block;
-            overflow: hidden;
-            border-right: .15em solid var(--primary-blue);
-            white-space: pre-wrap; /* Permet le retour à la ligne pour le texte long */
-            margin: 0;
-            animation: blink-caret .75s step-end infinite;
-            /* L'animation typing 0s est retirée car le JS gère déjà l'apparition progressive */
+        .send-button-bottom {
+            background: var(--button-send-bg);
+            border: none;
+            border-radius: 50%; /* Bouton rond */
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform var(--animation-duration), background-color var(--animation-duration);
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .send-button-bottom:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        .send-button-bottom:active {
+            transform: scale(0.95);
+        }
+        .send-button-bottom i {
+            color: var(--button-send-icon); /* Couleur de l'icône */
+            font-size: 1.2rem;
+        }
+        .send-button-bottom:disabled {
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+            transform: none;
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--primary-blue); }
+        /* --- 7. SUGGESTIONS DE PROMPT EN BAS --- */
+        .bottom-suggestions {
+            flex-shrink: 0;
+            padding: 10px 30px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            border-top: var(--glass-border);
+            background: var(--glass-panel-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+        .bottom-suggestions.hidden { display: none; }
+
+        .suggestion-chip {
+            background: var(--suggestion-bg);
+            border: var(--suggestion-border);
+            border-radius: 20px;
+            color: var(--text-light);
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--animation-duration);
+            white-space: nowrap; /* Empêche le texte de se briser */
+        }
+        .suggestion-chip:hover {
+            background: var(--suggestion-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* --- 7. MEDIA QUERIES pour la Responsivité --- */
-        @media (max-width: 600px) {
-            .chatbot-container {
+        /* --- 8. MEDIA QUERIES pour la Responsivité --- */
+        @media (max-width: 768px) {
+            .chatbot-wrapper {
                 width: 95%;
-                padding: 20px;
+                height: 95vh;
             }
-            .prompt-wrapper {
-                flex-direction: column; /* La barre de prompt et le bouton s'empilent */
-                align-items: stretch; /* Les éléments s'étirent sur toute la largeur */
+            .chat-header, .chat-input-area, .bottom-suggestions {
+                padding: 15px 20px;
             }
-            .send-button {
-                width: 100%; /* Le bouton prend toute la largeur */
-                padding: 12px 20px;
+            .chat-messages {
+                padding: 15px 20px;
             }
-            .prompt-input {
-                padding: 12px 15px;
+            .chat-header .logo {
+                font-size: 1.2rem;
             }
-            .response-area {
-                max-height: 300px; /* Réduit un peu la hauteur max sur petits écrans */
-                padding: 15px;
+            .chat-header .close-btn {
+                font-size: 1.5rem;
+            }
+            .welcome-text {
+                font-size: 1.1rem;
+            }
+            .center-icon {
+                font-size: 5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-wrapper {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0; /* Plein écran sur mobile */
+            }
+            .chat-header, .chat-input-area, .bottom-suggestions, .chat-messages {
+                padding: 10px 15px;
+            }
+            .chat-bubble {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+            .send-button-bottom {
+                width: 40px;
+                height: 40px;
+            }
+            .send-button-bottom i {
+                font-size: 1rem;
+            }
+            .welcome-text {
+                font-size: 1rem;
+            }
+            .initial-prompt-suggestions button {
+                font-size: 0.8rem;
+                padding: 8px 12px;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-    <div class="chatbot-container">
-        <div class="header-icon">🚀</div>
-        <h1>Bienvenue, Futur Codeur !</h1>
-        <p class="subtitle">Je suis l'assistant IA de Rafiki Écolier. Pose-moi une question sur le code, l'informatique ou tout ce qui t'intrigue !</p>
-
-        <div class="prompt-wrapper">
-            <input type="text" id="promptInput" class="prompt-input" placeholder="Ex: C'est quoi la différence entre Java et JavaScript ?" onkeypress="handleEnter(event)">
-            <button id="sendButton" class="send-button" onclick="sendPrompt()">Demander à l'IA</button>
+    <div class="chatbot-wrapper">
+        <div class="chat-header">
+            <span class="logo">Rafiki AI <span style="font-size: 0.8em; opacity: 0.7;">BETA</span></span>
+            <button class="close-btn" onclick="toggleChatbot()">✕</button>
         </div>
 
-        <div id="responseArea" class="response-area">
-            <div id="loader" class="loader"></div>
-            <p id="responseText" class="typing-text" style="display: none;"></p>
+        <div id="welcomeCenter" class="welcome-center">
+            <div class="center-icon">🧠</div>
+            <p class="welcome-text">Que voulez-vous savoir sur l'IA ?</p>
+            <div class="initial-prompt-suggestions">
+                <button onclick="sendSuggestedPrompt(this)">C'est quoi un algorithme de tri ?</button>
+                <button onclick="sendSuggestedPrompt(this)">Comment Java est-il différent de JavaScript ?</button>
+                <button onclick="sendSuggestedPrompt(this)">Quelles sont les bases de la programmation ?</button>
+            </div>
+        </div>
+
+        <div id="chatMessages" class="chat-messages hidden">
+            </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="promptInput" class="prompt-input-bottom" placeholder="Demandez quelque chose..." onkeypress="handleEnter(event)">
+            <button id="sendButton" class="send-button-bottom" onclick="sendPrompt()">
+                <i class="fas fa-paper-plane"></i> </button>
+        </div>
+
+        <div id="bottomSuggestions" class="bottom-suggestions hidden">
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Qu'est-ce que le Machine Learning ?</span>
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Expliquez-moi le concept de variable.</span>
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Donnez un exemple de code Python.</span>
         </div>
     </div>
 
     <script>
-        // --- 8. LOGIQUE JAVASCRIPT (Connexion Gemini) ---
-        // VEUILLEZ REMPLACER PAR VOTRE NOUVELLE CLÉ API GEMINI
-        const GEMINI_API_KEY = "AIzaSyDCqCdnYokMv7_PNEK3PgqAr46qbtdLmJE"; 
+        // --- LOGIQUE JAVASCRIPT (Connexion Gemini) ---
+        // VEUILLEZ REMPLACER PAR VOTRE CLÉ API GEMINI VALIDE !
+        const GEMINI_API_KEY = "AIzaSyBz3Yq6tqhklSNbUS8Ae4lVIyzXIIA4k7k"; 
         const PROMPT_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
+        const welcomeCenter = document.getElementById('welcomeCenter');
+        const chatMessages = document.getElementById('chatMessages');
         const promptInput = document.getElementById('promptInput');
         const sendButton = document.getElementById('sendButton');
-        const responseArea = document.getElementById('responseArea');
-        const responseText = document.getElementById('responseText');
-        const loader = document.getElementById('loader');
+        const bottomSuggestions = document.getElementById('bottomSuggestions');
+
+        // Initialisation de l'état du chat
+        let chatStarted = false; 
+
+        function toggleChatbot() {
+            // Pour l'instant, la "fermeture" efface le chat et réinitialise.
+            // En production, on pourrait le masquer.
+            if (chatStarted) {
+                chatMessages.innerHTML = '';
+                chatMessages.classList.add('hidden');
+                welcomeCenter.classList.remove('hidden');
+                bottomSuggestions.classList.add('hidden');
+                chatStarted = false;
+            }
+        }
 
         function handleEnter(e) {
             if (e.key === 'Enter') sendPrompt();
         }
 
-        async function sendPrompt() {
-            const userPrompt = promptInput.value.trim();
+        async function sendPrompt(suggestedText = null) {
+            const userPrompt = suggestedText || promptInput.value.trim();
             if (!userPrompt) return;
+
+            // Masquer le centre de bienvenue si c'est le premier message
+            if (!chatStarted) {
+                welcomeCenter.classList.add('hidden');
+                chatMessages.classList.remove('hidden');
+                bottomSuggestions.classList.remove('hidden'); // Afficher les suggestions du bas
+                chatStarted = true;
+            }
+
+            // Ajouter la bulle de l'utilisateur
+            addMessage(userPrompt, 'user');
+            promptInput.value = ''; // Effacer l'input
 
             // Désactiver l'input et le bouton pendant la requête
             promptInput.disabled = true;
             sendButton.disabled = true;
 
-            // Afficher l'aire de réponse et le loader
-            responseArea.classList.add('active');
-            responseText.style.display = 'none';
-            loader.style.display = 'block';
-            responseText.innerText = ''; // Effacer la réponse précédente
-
+            // Ajouter la bulle de l'IA avec un loader
+            const botMessageElement = addMessage('', 'bot', true); // true pour montrer le loader
+            
             try {
                 const response = await fetch(PROMPT_URL, {
                     method: 'POST',
@@ -295,16 +470,13 @@
                 const data = await response.json();
                 const aiResponse = data.candidates[0].content.parts[0].text;
                 
-                // Afficher la réponse avec l'effet "machine à écrire"
-                loader.style.display = 'none';
-                responseText.style.display = 'block';
-                typeWriterEffect(aiResponse);
+                // Remplacer le loader par la réponse avec l'effet "machine à écrire"
+                typeWriterEffect(botMessageElement, aiResponse);
 
             } catch (error) {
                 console.error("Erreur Gemini API:", error);
-                loader.style.display = 'none';
-                responseText.style.display = 'block';
-                responseText.innerText = "Désolé, une erreur est survenue lors de la connexion à Gemini. Vérifiez votre clé, votre console, ou votre quota d'utilisation.";
+                // Gérer l'erreur dans la bulle de l'IA
+                typeWriterEffect(botMessageElement, "Désolé, une erreur est survenue lors de la connexion à Gemini. Vérifiez votre clé, votre console, ou votre quota d'utilisation.");
             } finally {
                 // Réactiver l'input et le bouton après la requête
                 promptInput.disabled = false;
@@ -313,30 +485,77 @@
             }
         }
 
-        // Effet Machine à écrire pour la réponse
-        function typeWriterEffect(text) {
+        function addMessage(text, sender, showLoader = false) {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${sender}`;
+            if (showLoader) {
+                div.innerHTML = `<div class="loader"></div>`;
+            } else {
+                div.innerText = text;
+            }
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll automatique
+            return div; // Retourne l'élément pour y ajouter le texte plus tard
+        }
+
+        function typeWriterEffect(element, text) {
+            element.innerHTML = ''; // Nettoyer le contenu (enlever le loader)
+            element.style.animation = 'none'; // Désactiver l'animation fadeIn si elle est sur la bulle
+            element.classList.remove('typing-text'); // Enlever la classe de typing pour ne pas avoir de double curseur
+            
             let i = 0;
             const speed = 25; // Vitesse de frappe en ms
 
-            // Annuler toute animation de clignotement précédente sur le curseur
-            responseText.style.animation = 'none';
-            responseText.style.borderColor = 'transparent'; // Cache le curseur au début
+            // Ajouter le curseur clignotant au texte généré
+            const textSpan = document.createElement('span');
+            textSpan.classList.add('typing-text');
+            element.appendChild(textSpan);
 
             function type() {
                 if (i < text.length) {
-                    responseText.innerHTML += text.charAt(i);
+                    textSpan.innerHTML += text.charAt(i);
                     i++;
-                    // Si le texte déborde, scroll automatique
-                    responseArea.scrollTop = responseArea.scrollHeight;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                     setTimeout(type, speed);
                 } else {
-                    // Une fois le texte entièrement écrit, faire clignoter le curseur
-                    responseText.style.animation = 'blink-caret .75s step-end infinite';
-                    responseText.style.borderColor = 'var(--primary-blue)';
+                    // Retirer l'animation de clignotement après la fin
+                    textSpan.style.borderRight = 'none';
+                    textSpan.style.animation = 'none';
                 }
             }
             type();
         }
+
+        // Fonction pour envoyer un prompt suggéré
+        function sendSuggestedPrompt(button) {
+            const text = button.innerText;
+            sendPrompt(text);
+        }
+
+        // Gestion de la "fermeture" du chatbot (pour la démo, réinitialise)
+        function toggleChatbot() {
+            chatMessages.innerHTML = '';
+            welcomeCenter.classList.remove('hidden');
+            chatMessages.classList.add('hidden');
+            bottomSuggestions.classList.add('hidden');
+            chatStarted = false;
+            promptInput.value = '';
+            promptInput.disabled = false;
+            sendButton.disabled = false;
+            promptInput.focus();
+        }
+
+        // Ajouter une bulle de bienvenue au démarrage (pour un historique)
+        function addInitialBotMessage() {
+            if (!chatStarted) { // Ajoute seulement si le chat n'a pas commencé
+                 const botMessageElement = addMessage('', 'bot');
+                 typeWriterEffect(botMessageElement, "Bonjour ! Je suis Rafiki AI, votre tuteur intelligent. Posez-moi vos questions sur le code pour commencer ! 🚀");
+            }
+        }
+        // Pour une démo, on peut décider de ne pas avoir de message initial dans les bulles mais juste le welcome-center.
+        // Si vous voulez un message initial dans les bulles, décommentez ceci :
+        // setTimeout(addInitialBotMessage, 500); // Délai pour l'animation d'entrée
+        
     </script>
 </body>
 </html>
