@@ -369,11 +369,11 @@
 
         <div id="welcomeCenter" class="welcome-center">
             <div class="center-icon">🧠</div>
-            <p class="welcome-text">Que voulez-vous savoir sur l'IA ?</p>
+            <p class="welcome-text">Que voulez-vous savoir sur notre ville ?</p>
             <div class="initial-prompt-suggestions">
-                <button onclick="sendSuggestedPrompt(this)">C'est quoi un algorithme de tri ?</button>
-                <button onclick="sendSuggestedPrompt(this)">Comment Java est-il différent de JavaScript ?</button>
-                <button onclick="sendSuggestedPrompt(this)">Quelles sont les bases de la programmation ?</button>
+                <button onclick="sendSuggestedPrompt(this)">Quel est l’ancien nom de Lubumbashi durant la période coloniale ? ?</button>
+                <button onclick="sendSuggestedPrompt(this)">Quelle est la langue la plus parlée au quotidien dans la ville ?</button>
+                <button onclick="sendSuggestedPrompt(this)">Quel est le stade principal de la ville, où joue le TP Mazembe ?</button>
             </div>
         </div>
 
@@ -387,9 +387,9 @@
         </div>
 
         <div id="bottomSuggestions" class="bottom-suggestions hidden">
-            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Qu'est-ce que le Machine Learning ?</span>
-            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Expliquez-moi le concept de variable.</span>
-            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Donnez un exemple de code Python.</span>
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Quel est l’aéroport principal de la ville ?</span>
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Quel est le nom de la rivière qui traverse Lubumbashi ?</span>
+            <span class="suggestion-chip" onclick="sendSuggestedPrompt(this)">Quel est le nom du musée historique le plus connu de la ville ?</span>
         </div>
     </div>
 
@@ -549,7 +549,7 @@
         function addInitialBotMessage() {
             if (!chatStarted) { // Ajoute seulement si le chat n'a pas commencé
                  const botMessageElement = addMessage('', 'bot');
-                 typeWriterEffect(botMessageElement, "Bonjour ! Je suis Rafiki AI, votre tuteur intelligent. Posez-moi vos questions sur le code pour commencer ! 🚀");
+                 typeWriterEffect(botMessageElement, "Bonjour ! Je suis Rafiki AI, votre tuteur intelligent. Posez-moi vos questions sur notre belle ville ! 🚀");
             }
         }
         // Pour une démo, on peut décider de ne pas avoir de message initial dans les bulles mais juste le welcome-center.
@@ -559,3 +559,4 @@
     </script>
 </body>
 </html>
+
